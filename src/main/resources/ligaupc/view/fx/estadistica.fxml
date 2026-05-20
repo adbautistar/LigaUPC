@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    estadistica.fxml - Vista de Tabla de Posiciones (solo lectura)
+
+    Esta vista NO tiene formulario de creacion ni edicion.
+    Las estadisticas las genera automaticamente PartidoService al registrar resultados.
+
+    Muestra la tabla de posiciones ordenada por:
+      1. Puntos (desc)
+      2. Diferencia de goles (desc)
+      3. Goles a favor (desc)
+
+    Patron GRASP Expert:
+      EstadisticaService es el experto en calcular y ordenar la clasificacion.
+      EstadisticaController solo pide los datos y los muestra.
+
+    Patron SOLID SRP:
+      Si cambia el criterio de clasificacion, solo cambia EstadisticaService.
+      Esta vista no sabe nada del algoritmo de ordenamiento.
+-->
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ligaupc.view.fx.EstadisticaController"
+      spacing="14"
+      style="-fx-padding: 24; -fx-background-color: #f5f5f5;">
+
+    <!-- ── Titulo y descripcion ── -->
+    <Label text="Tabla de Posiciones — Liga UPC"
+           style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
+
+    <Label text="Las estadisticas se actualizan automaticamente al registrar resultados de partidos."
+           style="-fx-font-size: 12; -fx-text-fill: #757575;"/>
+
+    <!-- ── Boton de refresco ── -->
+    <HBox spacing="10">
+        <Button text="Refrescar tabla" onAction="#refrescar"
+                style="-fx-background-color: #1565c0; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-padding: 8 18; -fx-cursor: hand;"/>
+        <Label fx:id="lblMensaje" text=""
+               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <!-- ── Tabla de posiciones ── -->
+    <TableView fx:id="tablaEstadisticas" VBox.vgrow="ALWAYS"
+               style="-fx-border-color: #e0e0e0;">
+        <columns>
+            <TableColumn fx:id="colPos"      text="#"    prefWidth="40"/>
+            <TableColumn fx:id="colEquipo"   text="Equipo"  prefWidth="180"/>
+            <TableColumn fx:id="colPJ"       text="PJ"   prefWidth="50"/>
+            <TableColumn fx:id="colPG"       text="PG"   prefWidth="50"/>
+            <TableColumn fx:id="colPE"       text="PE"   prefWidth="50"/>
+            <TableColumn fx:id="colPP"       text="PP"   prefWidth="50"/>
+            <TableColumn fx:id="colGF"       text="GF"   prefWidth="50"/>
+            <TableColumn fx:id="colGC"       text="GC"   prefWidth="50"/>
+            <TableColumn fx:id="colDG"       text="DG"   prefWidth="55"/>
+            <TableColumn fx:id="colPts"      text="Pts"  prefWidth="55"/>
+        </columns>
+        <placeholder>
+            <Label text="No hay estadisticas. Registre partidos con resultado para generar la tabla."/>
+        </placeholder>
+    </TableView>
+
+</VBox>
