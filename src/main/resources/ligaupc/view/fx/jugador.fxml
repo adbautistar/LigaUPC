@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    jugador.fxml - Formulario CRUD de Jugadores
+
+    Estructura:
+      VBox principal
+        Label  -> titulo del modulo
+        GridPane -> campos del formulario (nombre, id, contacto, posicion, camiseta)
+        HBox   -> botones de accion CRUD
+        Label  -> mensaje de estado (exito / error)
+        TableView -> lista de todos los jugadores registrados
+
+    Patron GRASP High Cohesion:
+      Este FXML solo gestiona la vista de Jugadores.
+
+    Patron GRASP Low Coupling:
+      JugadorController accede a JugadorService via MainApp.getJugadorService().
+      No conoce al DAO ni a otros Controllers.
+-->
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ligaupc.view.fx.JugadorController"
+      spacing="14"
+      style="-fx-padding: 24; -fx-background-color: #f5f5f5;">
+
+    <!-- ── Titulo ── -->
+    <Label text="Gestion de Jugadores"
+           style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
+
+    <!-- ── Formulario ── -->
+    <GridPane hgap="12" vgap="10"
+              style="-fx-background-color: white; -fx-padding: 16;
+                     -fx-border-color: #e0e0e0; -fx-border-radius: 4;
+                     -fx-background-radius: 4;">
+        <columnConstraints>
+            <ColumnConstraints minWidth="130" prefWidth="140"/>
+            <ColumnConstraints minWidth="200" prefWidth="220"/>
+            <ColumnConstraints minWidth="130" prefWidth="140"/>
+            <ColumnConstraints minWidth="200" prefWidth="220"/>
+        </columnConstraints>
+
+        <!-- Fila 0 -->
+        <Label text="Identificacion *" GridPane.columnIndex="0" GridPane.rowIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtIdentificacion" promptText="Ej: 12345678"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Nombre *" GridPane.columnIndex="2" GridPane.rowIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtNombre" promptText="Nombre completo"
+                   GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+        <!-- Fila 1 -->
+        <Label text="Contacto" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="txtContacto" promptText="Telefono o correo"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Posicion *" GridPane.columnIndex="2" GridPane.rowIndex="1"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cmbPosicion" promptText="Seleccione..."
+                  maxWidth="Infinity"
+                  GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+        <!-- Fila 2 -->
+        <Label text="Numero Camiseta *" GridPane.columnIndex="0" GridPane.rowIndex="2"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtNumeroCamiseta" promptText="Ej: 10"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    </GridPane>
+
+    <!-- ── Botones de accion ── -->
+    <HBox spacing="10">
+        <Button text="Registrar"  onAction="#registrar"
+                style="-fx-background-color: #1565c0; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-padding: 8 18; -fx-cursor: hand;"/>
+        <Button text="Buscar"     onAction="#buscar"
+                style="-fx-background-color: #6a1b9a; -fx-text-fill: white;
+                       -fx-padding: 8 18; -fx-cursor: hand;"/>
+        <Button text="Actualizar" onAction="#actualizar"
+                style="-fx-background-color: #e65100; -fx-text-fill: white;
+                       -fx-padding: 8 18; -fx-cursor: hand;"/>
+        <Button text="Eliminar"   onAction="#eliminar"
+                style="-fx-background-color: #b71c1c; -fx-text-fill: white;
+                       -fx-padding: 8 18; -fx-cursor: hand;"/>
+        <Button text="Limpiar"    onAction="#limpiar"
+                style="-fx-background-color: #424242; -fx-text-fill: white;
+                       -fx-padding: 8 18; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- ── Mensaje de estado ── -->
+    <Label fx:id="lblMensaje" text=""
+           style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+
+    <!-- ── Tabla de jugadores ── -->
+    <TableView fx:id="tablaJugadores"
+               VBox.vgrow="ALWAYS"
+               style="-fx-border-color: #e0e0e0;">
+        <columns>
+            <TableColumn fx:id="colIdentificacion" text="Identificacion" prefWidth="130"/>
+            <TableColumn fx:id="colNombre"         text="Nombre"         prefWidth="180"/>
+            <TableColumn fx:id="colContacto"       text="Contacto"       prefWidth="150"/>
+            <TableColumn fx:id="colPosicion"       text="Posicion"       prefWidth="120"/>
+            <TableColumn fx:id="colCamiseta"       text="Camiseta"       prefWidth="80"/>
+        </columns>
+        <placeholder>
+            <Label text="No hay jugadores registrados."/>
+        </placeholder>
+    </TableView>
+
+</VBox>
