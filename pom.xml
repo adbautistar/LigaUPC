@@ -9,8 +9,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
-        <!-- Punto de entrada activo: JavaFX. Consola disponible en ligaupc.LigaUPC -->
-        <exec.mainClass>ligaupc.MainApp</exec.mainClass>
+        <!-- Launcher: clase intermedia que no extiende Application.
+             Necesaria para que NetBeans/Java 17 no bloquee la ejecucion.
+             mvn javafx:run sigue usando MainApp directamente (configurado abajo). -->
+        <exec.mainClass>ligaupc.Launcher</exec.mainClass>
         <!-- Version centralizada de JavaFX -->
         <javafx.version>21.0.2</javafx.version>
     </properties>
