@@ -5,9 +5,17 @@ import ligaupc.service.*;
 import ligaupc.view.console.*;
 
 /**
- * Punto de entrada del sistema Liga UPC.
- * Ensambla todas las capas: instancia Services y Views, comparte el Scanner,
- * y presenta el menú principal de navegación.
+ * Punto de entrada CONSOLA del sistema Liga UPC (version de referencia pedagogica).
+ *
+ * <p>Esta clase se conserva como implementacion de referencia que muestra
+ * el mismo sistema funcionando en capa de consola, ilustrando el principio
+ * <b>OCP (Open/Closed)</b>: el proyecto se extendio con JavaFX sin modificar
+ * ni eliminar esta version.</p>
+ *
+ * <p>El punto de entrada activo del sistema es {@link MainApp} (JavaFX).</p>
+ *
+ * <p>Ensambla todas las capas: instancia Services y Views, comparte el Scanner,
+ * y presenta el menu principal de navegacion.</p>
  */
 public class LigaUPC {
 
