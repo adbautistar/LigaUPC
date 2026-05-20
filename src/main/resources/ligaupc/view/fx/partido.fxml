@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    partido.fxml - Formulario de Partidos
+
+    Dos flujos de trabajo:
+    1. Programar partido: fecha + equipos + arbitro -> estado "Programado"
+    2. Registrar resultado: idPartido + goles -> estado "Finalizado" + actualiza estadisticas
+
+    Complejidad: usa 3 services (PartidoService + EquipoService + ArbitroService)
+    via el patron ServiceLocator de MainApp.
+
+    Patron GRASP Controller:
+      PartidoService orquesta el flujo mas complejo del sistema:
+      registrar resultado implica actualizar estadisticas de ambos equipos.
+      PartidoController solo captura los datos del usuario y los pasa al service.
+-->
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ligaupc.view.fx.PartidoController"
+      spacing="12"
+      style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+
+    <!-- ── Titulo ── -->
+    <Label text="Gestion de Partidos"
+           style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
+
+    <!-- ══════════════════════════════════════════
+         SECCION 1: Programar partido
+         ══════════════════════════════════════════ -->
+    <Label text="Programar partido"
+           style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+
+    <GridPane hgap="12" vgap="10"
+              style="-fx-background-color: white; -fx-padding: 14;
+                     -fx-border-color: #e0e0e0; -fx-border-radius: 4;
+                     -fx-background-radius: 4;">
+        <columnConstraints>
+            <ColumnConstraints minWidth="110" prefWidth="120"/>
+            <ColumnConstraints minWidth="160" prefWidth="180"/>
+            <ColumnConstraints minWidth="110" prefWidth="130"/>
+            <ColumnConstraints minWidth="160" prefWidth="190"/>
+        </columnConstraints>
+
+        <!-- Fila 0 -->
+        <Label text="ID Partido *" GridPane.columnIndex="0" GridPane.rowIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtIdPartido" promptText="Numero entero"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Fecha *" GridPane.columnIndex="2" GridPane.rowIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="dateFecha" promptText="dd/mm/aaaa"
+                    maxWidth="Infinity"
+                    GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+        <!-- Fila 1 -->
+        <Label text="Equipo Local *" GridPane.columnIndex="0" GridPane.rowIndex="1"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cmbEquipoLocal" promptText="Seleccione..."
+                  maxWidth="Infinity"
+                  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Equipo Visitante *" GridPane.columnIndex="2" GridPane.rowIndex="1"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cmbEquipoVisitante" promptText="Seleccione..."
+                  maxWidth="Infinity"
+                  GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+        <!-- Fila 2 -->
+        <Label text="Arbitro *" GridPane.columnIndex="0" GridPane.rowIndex="2"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cmbArbitro" promptText="Seleccione..."
+                  maxWidth="Infinity"
+                  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    </GridPane>
+
+    <!-- Botones de programacion -->
+    <HBox spacing="10">
+        <Button text="Programar"  onAction="#programar"
+                style="-fx-background-color: #1565c0; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-padding: 8 16; -fx-cursor: hand;"/>
+        <Button text="Buscar"     onAction="#buscar"
+                style="-fx-background-color: #6a1b9a; -fx-text-fill: white;
+                       -fx-padding: 8 16; -fx-cursor: hand;"/>
+        <Button text="Eliminar"   onAction="#eliminar"
+                style="-fx-background-color: #b71c1c; -fx-text-fill: white;
+                       -fx-padding: 8 16; -fx-cursor: hand;"/>
+        <Button text="Limpiar"    onAction="#limpiar"
+                style="-fx-background-color: #424242; -fx-text-fill: white;
+                       -fx-padding: 8 16; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- ══════════════════════════════════════════
+         SECCION 2: Registrar resultado
+         Solo disponible para partidos en estado "Programado"
+         ══════════════════════════════════════════ -->
+    <Separator/>
+    <Label text="Registrar resultado"
+           style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+
+    <HBox spacing="12" style="-fx-alignment: CENTER-LEFT;">
+        <Label text="ID Partido:" style="-fx-min-width: 80;"/>
+        <TextField fx:id="txtIdResultado" promptText="ID"
+                   prefWidth="70"/>
+
+        <Label text="Goles Local:" style="-fx-min-width: 80;"/>
+        <TextField fx:id="txtGolesLocal" promptText="0"
+                   prefWidth="55"/>
+
+        <Label text="Goles Visitante:" style="-fx-min-width: 100;"/>
+        <TextField fx:id="txtGolesVisitante" promptText="0"
+                   prefWidth="55"/>
+
+        <Button text="Registrar Resultado" onAction="#registrarResultado"
+                style="-fx-background-color: #2e7d32; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-padding: 8 16; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Mensaje de estado -->
+    <Label fx:id="lblMensaje" text=""/>
+
+    <!-- ══════════════════════════════════════════
+         SECCION 3: Tabla de partidos
+         ══════════════════════════════════════════ -->
+    <TableView fx:id="tablaPartidos" VBox.vgrow="ALWAYS"
+               style="-fx-border-color: #e0e0e0;">
+        <columns>
+            <TableColumn fx:id="colId"         text="ID"        prefWidth="45"/>
+            <TableColumn fx:id="colFecha"      text="Fecha"     prefWidth="95"/>
+            <TableColumn fx:id="colLocal"      text="Local"     prefWidth="150"/>
+            <TableColumn fx:id="colVisitante"  text="Visitante" prefWidth="150"/>
+            <TableColumn fx:id="colGoles"      text="Resultado" prefWidth="90"/>
+            <TableColumn fx:id="colArbitro"    text="Arbitro"   prefWidth="150"/>
+            <TableColumn fx:id="colEstado"     text="Estado"    prefWidth="95"/>
+        </columns>
+        <placeholder>
+            <Label text="No hay partidos programados."/>
+        </placeholder>
+    </TableView>
+
+</VBox>
