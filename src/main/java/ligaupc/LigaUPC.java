@@ -2,7 +2,7 @@ package ligaupc;
 
 import java.util.Scanner;
 import ligaupc.service.*;
-import ligaupc.view.*;
+import ligaupc.view.console.*;
 
 /**
  * Punto de entrada del sistema Liga UPC.
