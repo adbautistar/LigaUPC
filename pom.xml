@@ -5,9 +5,53 @@
     <artifactId>LigaUPC</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
+        <!-- Punto de entrada actual (consola) - se actualizara en Fase 4 a ligaupc.MainApp -->
         <exec.mainClass>ligaupc.LigaUPC</exec.mainClass>
+        <!-- Version centralizada de JavaFX -->
+        <javafx.version>21.0.2</javafx.version>
     </properties>
+
+    <dependencies>
+        <!-- JavaFX Controls: botones, tablas, listas, formularios -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <!-- JavaFX FXML: carga de archivos .fxml para separar UI de logica -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin JavaFX: permite ejecutar con 'mvn javafx:run' -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <!-- Se actualizara en Fase 4 cuando MainApp este creado -->
+                    <mainClass>ligaupc.MainApp</mainClass>
+                </configuration>
+            </plugin>
+            <!-- Plugin compiler: garantiza Java 17 en todos los entornos -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
