@@ -9,8 +9,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
-        <!-- Punto de entrada actual (consola) - se actualizara en Fase 4 a ligaupc.MainApp -->
-        <exec.mainClass>ligaupc.LigaUPC</exec.mainClass>
+        <!-- Punto de entrada activo: JavaFX. Consola disponible en ligaupc.LigaUPC -->
+        <exec.mainClass>ligaupc.MainApp</exec.mainClass>
         <!-- Version centralizada de JavaFX -->
         <javafx.version>21.0.2</javafx.version>
     </properties>
