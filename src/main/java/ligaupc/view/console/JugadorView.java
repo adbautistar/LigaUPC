@@ -1,4 +1,4 @@
-package ligaupc.view;
+package ligaupc.view.console;
 
 import java.util.List;
 import java.util.Scanner;
