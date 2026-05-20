@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+    equipo.fxml - Formulario CRUD de Equipos
+
+    Seccion 1: Datos basicos del equipo (nombre, sede)
+    Seccion 2: Asignacion de tecnico al equipo seleccionado
+    Seccion 3: Gestion de jugadores (agregar / quitar por ID)
+    Seccion 4: Tabla principal de equipos | Tabla de jugadores del equipo seleccionado
+
+    Complejidad: usa 3 services (EquipoService + TecnicoService + JugadorService)
+    via el patron ServiceLocator de MainApp.
+
+    Patron GRASP Low Coupling:
+      EquipoController accede a los 3 services via MainApp.get*Service().
+      No hay dependencia directa entre Controllers.
+-->
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ligaupc.view.fx.EquipoController"
+      spacing="12"
+      style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+
+    <!-- ── Titulo ── -->
+    <Label text="Gestion de Equipos"
+           style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1a237e;"/>
+
+    <!-- ══════════════════════════════════════════
+         SECCION 1: Datos basicos del equipo
+         ══════════════════════════════════════════ -->
+    <GridPane hgap="12" vgap="10"
+              style="-fx-background-color: white; -fx-padding: 14;
+                     -fx-border-color: #e0e0e0; -fx-border-radius: 4;
+                     -fx-background-radius: 4;">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" prefWidth="120"/>
+            <ColumnConstraints minWidth="180" prefWidth="200"/>
+            <ColumnConstraints minWidth="100" prefWidth="120"/>
+            <ColumnConstraints minWidth="180" prefWidth="200"/>
+        </columnConstraints>
+
+        <Label text="Nombre *" GridPane.columnIndex="0" GridPane.rowIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtNombre" promptText="Nombre del equipo"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Sede *" GridPane.columnIndex="2" GridPane.rowIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="txtSede" promptText="Ciudad o campus"
+                   GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+    </GridPane>
+
+    <!-- Botones CRUD -->
+    <HBox spacing="10">
+        <Button text="Registrar"  onAction="#registrar"
+                style="-fx-background-color: #1565c0; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-padding: 8 16; -fx-cursor: hand;"/>
+        <Button text="Buscar"     onAction="#buscar"
+                style="-fx-background-color: #6a1b9a; -fx-text-fill: white;
+                       -fx-padding: 8 16; -fx-cursor: hand;"/>
+        <Button text="Actualizar" onAction="#actualizar"
+                style="-fx-background-color: #e65100; -fx-text-fill: white;
+                       -fx-padding: 8 16; -fx-cursor: hand;"/>
+        <Button text="Eliminar"   onAction="#eliminar"
+                style="-fx-background-color: #b71c1c; -fx-text-fill: white;
+                       -fx-padding: 8 16; -fx-cursor: hand;"/>
+        <Button text="Limpiar"    onAction="#limpiar"
+                style="-fx-background-color: #424242; -fx-text-fill: white;
+                       -fx-padding: 8 16; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- ══════════════════════════════════════════
+         SECCION 2: Asignar Tecnico
+         ══════════════════════════════════════════ -->
+    <Separator/>
+    <HBox spacing="12" style="-fx-alignment: CENTER-LEFT;">
+        <Label text="Asignar Tecnico:"
+               style="-fx-font-weight: bold; -fx-min-width: 120;"/>
+        <ComboBox fx:id="cmbTecnico" promptText="Seleccione tecnico..."
+                  prefWidth="240"/>
+        <Button text="Asignar" onAction="#asignarTecnico"
+                style="-fx-background-color: #2e7d32; -fx-text-fill: white;
+                       -fx-padding: 7 16; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- ══════════════════════════════════════════
+         SECCION 3: Gestión de jugadores
+         ══════════════════════════════════════════ -->
+    <HBox spacing="12" style="-fx-alignment: CENTER-LEFT;">
+        <Label text="ID Jugador:"
+               style="-fx-font-weight: bold; -fx-min-width: 120;"/>
+        <TextField fx:id="txtIdJugador" promptText="Identificacion del jugador"
+                   prefWidth="200"/>
+        <Button text="Agregar Jugador" onAction="#agregarJugador"
+                style="-fx-background-color: #00695c; -fx-text-fill: white;
+                       -fx-padding: 7 14; -fx-cursor: hand;"/>
+        <Button text="Quitar Jugador"  onAction="#quitarJugador"
+                style="-fx-background-color: #bf360c; -fx-text-fill: white;
+                       -fx-padding: 7 14; -fx-cursor: hand;"/>
+    </HBox>
+
+    <!-- Mensaje de estado -->
+    <Label fx:id="lblMensaje" text=""/>
+
+    <!-- ══════════════════════════════════════════
+         SECCION 4: Tablas
+         Izquierda: lista de equipos
+         Derecha: jugadores del equipo seleccionado
+         ══════════════════════════════════════════ -->
+    <HBox spacing="12" VBox.vgrow="ALWAYS">
+
+        <!-- Tabla de equipos -->
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Equipos registrados"
+                   style="-fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+            <TableView fx:id="tablaEquipos" VBox.vgrow="ALWAYS"
+                       style="-fx-border-color: #e0e0e0;">
+                <columns>
+                    <TableColumn fx:id="colNombre"  text="Nombre"  prefWidth="160"/>
+                    <TableColumn fx:id="colSede"    text="Sede"    prefWidth="130"/>
+                    <TableColumn fx:id="colTecnico" text="Tecnico" prefWidth="160"/>
+                </columns>
+                <placeholder>
+                    <Label text="No hay equipos registrados."/>
+                </placeholder>
+            </TableView>
+        </VBox>
+
+        <!-- Tabla de jugadores del equipo seleccionado -->
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label fx:id="lblJugadoresEquipo" text="Jugadores del equipo"
+                   style="-fx-font-weight: bold; -fx-text-fill: #37474f;"/>
+            <TableView fx:id="tablaJugadoresEquipo" VBox.vgrow="ALWAYS"
+                       style="-fx-border-color: #e0e0e0;">
+                <columns>
+                    <TableColumn fx:id="colJugadorId"       text="ID"       prefWidth="100"/>
+                    <TableColumn fx:id="colJugadorNombre"   text="Nombre"   prefWidth="150"/>
+                    <TableColumn fx:id="colJugadorPosicion" text="Posicion" prefWidth="110"/>
+                    <TableColumn fx:id="colJugadorCamiseta" text="Camiseta" prefWidth="70"/>
+                </columns>
+                <placeholder>
+                    <Label text="Seleccione un equipo para ver sus jugadores."/>
+                </placeholder>
+            </TableView>
+        </VBox>
+
+    </HBox>
+
+</VBox>
